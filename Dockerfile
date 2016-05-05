@@ -175,3 +175,8 @@ RUN cd /home/node/tmp &&\
     npm install -g jshint@$JSHINT_VERSION &&\
     npm install -g tslint@$TSLINT_VERSION &&\
     npm install -g jslint@$JSLINT_VERSION
+
+RUN cd /home/node/tmp &&\
+    curl -s https://getcomposer.org/installer | php &&\
+    mv composer.phar /usr/local/bin/composer &&\
+    rm -fr tmp
