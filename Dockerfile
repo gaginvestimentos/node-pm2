@@ -35,12 +35,12 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update && apt-get install -y \
-		ca-certificates \
-		curl \
-		libedit2 \
-		libsqlite3-0 \
-		libxml2 \
-	--no-install-recommends && rm -r /var/lib/apt/lists/*
+        ca-certificates \
+        curl \
+        libedit2 \
+        libsqlite3-0 \
+        libxml2 \
+    --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # ==============================================================================
 # Install Postgres, MySQL, MongoDB and more dependencies
@@ -88,16 +88,16 @@ RUN  apt-get update -qq \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN set -xe \
-	&& buildDeps=" \
-		$PHP_EXTRA_BUILD_DEPS \
-		libcurl4-openssl-dev \
-		libedit-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		libxml2-dev \
-		xz-utils \
-	" \
-	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/*
+    && buildDeps=" \
+        $PHP_EXTRA_BUILD_DEPS \
+        libcurl4-openssl-dev \
+        libedit-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libxml2-dev \
+        xz-utils \
+    " \
+    && apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
@@ -108,29 +108,33 @@ ENV PHP_FILENAME php-7.0.6.tar.xz
 RUN cd $HOME && mkdir -p $HOME/tmp
 
 RUN cd $HOME/tmp \
-	&& wget  http://www.php.net/distributions/$PHP_FILENAME \
-	&& export GNUPGHOME="$(mktemp -d)" \
-	&& tar -xf "$PHP_FILENAME" -C /usr/src/php --strip-components=1 \
-	&& rm "$PHP_FILENAME" \
-	&& cd /usr/src/php \
-	&& ./configure \
-		--with-config-file-path="$PHP_INI_DIR" \
-		--with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
-		$PHP_EXTRA_CONFIGURE_ARGS \
-		--disable-cgi \
+    && wget  http://www.php.net/distributions/$PHP_FILENAME \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && tar -xf "$PHP_FILENAME" -C /usr/src/php --strip-components=1 \
+    && rm "$PHP_FILENAME" \
+    && cd /usr/src/php \
+    && ./configure \
+        --with-config-file-path="$PHP_INI_DIR" \
+        --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
+        $PHP_EXTRA_CONFIGURE_ARGS \
+        --disable-cgi \
 # --enable-mysqlnd is included here because it's harder to compile after the fact than extensions are (since it's a plugin for several extensions, not an extension in itself)
-		--enable-mysqlnd \
+        --enable-mysqlnd \
 # --enable-mbstring is included here because otherwise there's no way to get pecl to use it properly (see https://github.com/docker-library/php/issues/195)
-		--enable-mbstring \
-		--with-curl \
-		--with-libedit \
-		--with-openssl \
-		--with-zlib \
-	&& make -j"$(nproc)" \
-	&& make install \
-	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
-	&& make clean \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps
+        --enable-mbstring \
+        --with-curl \
+        --with-libedit \
+        --with-openssl \
+        --with-zlib \
+        --with-pdo-pgsql \
+        --with-zlib-dir \
+        --enable-inline-optimization \
+        --enable-calendar \
+    && make -j"$(nproc)" \
+    && make install \
+    && { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
+    && make clean \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps
 
 COPY docker-php-ext-* /usr/local/bin/
 
@@ -140,9 +144,9 @@ RUN echo 'Defaults !requiretty' >> /etc/sudoers; \
     echo 'node ALL= NOPASSWD: /usr/sbin/dpkg-reconfigure -f noninteractive tzdata, /usr/bin/tee /etc/timezone' >> /etc/sudoers;
 
 RUN mkdir -p /var/www
-RUN  chown -R node\:node /var/www && chown -R node\:node /usr/local && chown -R node\:node /usr/src/php && chown -R node\:node /home/node
+RUN chown -R node\:node /var/www && chown -R node\:node /usr/local && chown -R node\:node /usr/src/php && chown -R node\:node /home/node
 
-USER node 
+USER node
 
 ENV NPM_CONFIG_LOGLEVEL info
 ENV NODE_VERSION 4.4.2
