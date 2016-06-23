@@ -149,16 +149,14 @@ RUN chown -R node\:node /var/www && chown -R node\:node /usr/local && chown -R n
 USER node
 
 ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 4.4.2
-ENV PM2_VERSION 1.0.2
-ENV TYPESCRIPT_VERSION 1.8.5
-ENV TYPINGS_VERSION 1.0.4
+ENV NODE_VERSION 4.4.5
+ENV PM2_VERSION 1.1.3
+ENV TYPESCRIPT_VERSION 1.8.10
+ENV TYPINGS_VERSION 1.3.0
 ENV GULP_VERSION 3.9.1
 ENV MOCHA_VERSION 2.4.5
 ENV CHAI_VERSION 3.5.0
-ENV JSLINT_VERSION 0.9.6
-ENV JSHINT_VERSION 2.9.2
-ENV TSLINT_VERSION 3.8.0
+ENV TSLINT_VERSION 3.11.0
 ENV HOME /home/node
 
 RUN cd $HOME && mkdir -p $HOME/tmp
@@ -176,9 +174,7 @@ RUN cd /home/node/tmp &&\
     npm install -g typescript@$TYPESCRIPT_VERSION &&\
     npm install -g typings@$TYPINGS_VERSION &&\
     npm install -g chai@$CHAI_VERSION &&\
-    npm install -g jshint@$JSHINT_VERSION &&\
-    npm install -g tslint@$TSLINT_VERSION &&\
-    npm install -g jslint@$JSLINT_VERSION
+    npm install -g tslint@$TSLINT_VERSION
 
 RUN cd /home/node/tmp &&\
     curl -s https://getcomposer.org/installer | php &&\
